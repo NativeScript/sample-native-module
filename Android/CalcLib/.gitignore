@@ -1,0 +1,9 @@
+/bin/
+/obj/
+/build
+/libs/armeabi-v7a/
+/libs/x86/
+/jni/include/jni.h
+build.xml
+
+./dist/
