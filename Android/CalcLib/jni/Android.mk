@@ -4,8 +4,8 @@ include $(CLEAR_VARS)
 LOCAL_MODULE    := NativeScript
 ifeq ($(TARGET_ARCH_ABI),armeabi-v7a)
     LOCAL_SRC_FILES := libs/arm/libNativeScript.so
-else ifeq ($(TARGET_ARCH_ABI),armeabi)
-    LOCAL_SRC_FILES := libs/arm/libNativeScript.so
+else ifeq ($(TARGET_ARCH_ABI),arm64-v8a)
+    LOCAL_SRC_FILES := libs/arm64/libNativeScript.so
 else ifeq ($(TARGET_ARCH_ABI),x86)
     LOCAL_SRC_FILES := libs/x86/libNativeScript.so
 endif
