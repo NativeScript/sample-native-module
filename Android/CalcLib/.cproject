@@ -28,7 +28,7 @@
 							</builder>
 							<tool id="com.android.gcc.compiler.675284790" name="Android GCC Compiler" superClass="com.android.gcc.compiler">
 								<option id="com.android.gcc.option.includePath.614931643" superClass="com.android.gcc.option.includePath" valueType="includePath">
-									<listOptionValue builtIn="false" value="&quot;C:\Work\Workspaces\nativescript\CalcLib\jni\include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}\jni\include&quot;"/>
 								</option>
 								<inputType id="com.android.gcc.inputType.13245478" superClass="com.android.gcc.inputType"/>
 							</tool>
@@ -55,4 +55,5 @@
 		<resource resourceType="PROJECT" workspacePath="/CalcLib"/>
 	</storageModule>
 	<storageModule moduleId="org.eclipse.cdt.internal.ui.text.commentOwnerProjectMappings"/>
+	<storageModule moduleId="org.eclipse.cdt.core.LanguageSettingsProviders"/>
 </cproject>

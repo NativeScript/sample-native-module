@@ -1,5 +1,8 @@
 #include <jni.h>
 #include "include\v8.h"
+#include <sys/types.h>
+#include <stdint.h>
+#include <cstdlib>
 
 void AddFuncCallback(const v8::FunctionCallbackInfo<v8::Value>& args);
 
@@ -33,7 +36,7 @@ extern "C" void NSMain(const v8::FunctionCallbackInfo<v8::Value>& args)
 	auto func = maybeFunc.ToLocalChecked();
 
 	auto propName = v8::String::NewFromUtf8(isolate, "add");
-	exports->Set(ctx, propName, func);
+	auto result = exports->Set(ctx, propName, func);
 }
 
 void AddFuncCallback(const v8::FunctionCallbackInfo<v8::Value>& args)
@@ -47,5 +50,5 @@ void AddFuncCallback(const v8::FunctionCallbackInfo<v8::Value>& args)
 		result = args[0]->Int32Value() + args[1]->Int32Value();
 	}
 
-	args.GetReturnValue().Set(result);
+	args.GetReturnValue().Set(v8::Int32::New(args.GetIsolate(), result));
 }
