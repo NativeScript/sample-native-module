@@ -1,0 +1,104 @@
+apply plugin: 'com.android.model.library'
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle-experimental:0.8.1'
+    }
+}
+
+allprojects {
+    repositories {
+        jcenter()
+    }
+}
+
+model {
+    android {
+        compileSdkVersion = 23
+        buildToolsVersion = "25.0.2"
+
+        defaultConfig.with {
+            minSdkVersion.apiLevel = 17
+            targetSdkVersion.apiLevel = 25
+        }
+
+        lintOptions.with {
+            abortOnError = false
+        }
+    }
+
+    android.buildTypes {
+        release {
+            minifyEnabled = false
+        }
+    }
+
+    android.ndk {
+        cppFlags.addAll(["-I${file("src/main/")}".toString(),
+                         "-I${file("src/main/cpp/include")}".toString()
+        ])
+
+        CFlags.addAll(["-I${file("src/main/cpp")}".toString(),
+                       "-I${file("src/main/cpp/include")}".toString()
+        ])
+
+        cppFlags.addAll(["-std=c++11", ])//"-fexceptions", "-fno-builtin-stpcpy",])
+
+        CFlags.addAll(["-Wno-error=format-security", "-g", "-fno-builtin-stpcpy"])
+
+//        ldLibs.addAll(["android", "dl", "log", "atomic", "z"])
+
+        ldFlags.addAll(["-Wl,--allow-multiple-definition"])
+
+        toolchain = "clang"
+        stl = "c++_static"
+
+//        abiFilters.addAll(["armeabi-v7a", "x86", "arm64-v8a"])
+        abiFilters.addAll(["x86"])
+//        abiFilters.addAll(["arm64-v8a", "x86", "armeabi-v7a"])
+        moduleName = "calcLib"
+    }
+
+    android.sources {
+        main {
+            java {
+                source {
+                    srcDirs 'src/main/java'
+                }
+            }
+
+            jni {
+                source {
+                    srcDirs 'src/main/cpp'
+                }
+
+                exportedHeaders {
+                    srcDir "src/main/cpp/include"
+                }
+
+                dependencies {
+                    library "NativeScript" linkage "shared"
+                }
+            }
+        }
+    }
+
+    repositories {
+        prebuilt(PrebuiltLibraries) {
+            NativeScript {
+                headers.srcDir "src/main/cpp/include"
+                binaries.withType(SharedLibraryBinary) {
+                    def filep = file("src/main/libs/${targetPlatform.getName()}/libNativeScript.so")
+                    def exists = filep.exists()
+                    if (exists) {
+                        sharedLibraryFile = filep
+                    }
+                    println "~~~~~ FILE PATH: src/main/libs/${targetPlatform.getName()}/libNativeScript.so exists: ${exists}"
+                }
+            }
+        }
+    }
+}
