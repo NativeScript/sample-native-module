@@ -1,65 +1,31 @@
-# For more information about using CMake with Android Studio, read the
-# documentation: https://d.android.com/studio/projects/add-native-code.html
-
-# Sets the minimum version of CMake required to build the native library.
-
 cmake_minimum_required(VERSION 3.4.1)
 
-# Creates and names a library, sets it as either STATIC
-# or SHARED, and provides the relative paths to its source code.
-# You can define multiple libraries, and CMake builds them for you.
-# Gradle automatically packages shared libraries with your APK.
+if ( ANDROID_ABI MATCHES "arm64" )
+    set(ARCH_INCLUDE_DIR "aarch64-linux-android")
+else()
+    set(ARCH_INCLUDE_DIR "arm-linux-androideabi")
+endif()
 
-add_library( # Sets the name of the library.
-             myCalc
+include_directories(
+    ${PROJECT_SOURCE_DIR}/src/main/cpp/include/
+    ${ANDROID_NDK_ROOT}/sysroot/usr/include/${ARCH_INCLUDE_DIR}/
+)
 
-             # Sets the library as a shared library.
-             SHARED
+set(CMAKE_CXX_FLAGS "-std=c++11 -fexceptions")
 
-             # Provides a relative path to your source file(s).
-             src/main/cpp/Calc.cpp )
+add_library( # Sets the name of the library. When it's built you can find it with lib prefix libCalc.so
+        calc
 
+        # Sets the library as a shared library.
+        SHARED
 
-add_library( NativeScript
-             SHARED
-             IMPORTED )
+        src/main/cpp/Calc.cpp
+)
 
-set_target_properties( # Specifies the target library.
-                       NativeScript
-
-                       # Specifies the parameter you want to define.
-                       PROPERTIES IMPORTED_LOCATION
-
-                       # Provides the path to the library you want to import.
-                       D:/work/sample-native-module/MyCalcLib/app/src/main/libs/${ANDROID_ABI}/libNativeScript.so )
-
-include_directories( D:/work/sample-native-module/MyCalcLib/app/src/main/cpp/include/ )
-
-# Searches for a specified prebuilt library and stores the path as a
-# variable. Because CMake includes system libraries in the search path by
-# default, you only need to specify the name of the public NDK library
-# you want to add. CMake verifies that the library exists before
-# completing its build.
-
-find_library( # Sets the name of the path variable.
-              log-lib
-
-              # Specifies the name of the NDK library that
-              # you want CMake to locate.
-              log )
-
-# Specifies libraries CMake should link to your target library. You
-# can link multiple libraries, such as libraries you define in this
-# build script, prebuilt third-party libraries, or system libraries.
-
-target_include_directories(myCalc PRIVATE
-                           src/main/cpp/include/)
-
-target_link_libraries( # Specifies the target library.
-                       myCalc
-
-                       NativeScript
-
-                       # Links the target library to the log library
-                       # included in the NDK.
-                       ${log-lib} )
+target_link_libraries( calc ${PROJECT_SOURCE_DIR}/src/main/libs/${ANDROID_ABI}/libv8_base.a )
+target_link_libraries( calc ${PROJECT_SOURCE_DIR}/src/main/libs/${ANDROID_ABI}/libv8_init.a )
+target_link_libraries( calc ${PROJECT_SOURCE_DIR}/src/main/libs/${ANDROID_ABI}/libv8_initializers.a )
+target_link_libraries( calc ${PROJECT_SOURCE_DIR}/src/main/libs/${ANDROID_ABI}/libv8_libplatform.a )
+target_link_libraries( calc ${PROJECT_SOURCE_DIR}/src/main/libs/${ANDROID_ABI}/libv8_libsampler.a )
+target_link_libraries( calc ${PROJECT_SOURCE_DIR}/src/main/libs/${ANDROID_ABI}/libv8_libbase.a )
+target_link_libraries( calc ${PROJECT_SOURCE_DIR}/src/main/libs/${ANDROID_ABI}/libv8_snapshot.a )
