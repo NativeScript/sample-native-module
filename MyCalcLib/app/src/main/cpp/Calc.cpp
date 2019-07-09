@@ -44,10 +44,11 @@ void AddFuncCallback(const v8::FunctionCallbackInfo<v8::Value>& args)
     int result = 0;
 
     auto len = args.Length();
+    auto context = args.GetIsolate()->GetCurrentContext();
 
     if ((len == 2) && args[0]->IsInt32() && args[1]->IsInt32())
     {
-        result = args[0]->Int32Value() + args[1]->Int32Value();
+        result = args[0]->Int32Value(context).ToChecked() + args[1]->Int32Value(context).ToChecked();
     }
 
     args.GetReturnValue().Set(v8::Int32::New(args.GetIsolate(), result));
